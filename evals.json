@@ -1,0 +1,36 @@
+{
+  "skill_name": "grafana-central-templates",
+  "notes": "These test the conventions layer, not general Grafana knowledge — that belongs to the official grafana-core skills. Run each with and without this skill. Prompt 3 never says 'Grafana', testing whether the description triggers on intent rather than keyword.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "帮我做一个看板，展示订单服务的 QPS、错误率和 P95 延迟，指标是 OTel 采集的。",
+      "expected_output": "Copies assets/skeleton.json rather than generating JSON from scratch. Raises that the service label must be confirmed before deploy instead of guessing it. Uses a datasource template variable with no hardcoded UID. Clamps the error-ratio denominator and puts an absolute error rate alongside it. Passes scripts/validate.py. Defers panel and PromQL detail to the official skills instead of restating it.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "我们一部分服务用 Spring Boot 的 Micrometer，一部分用 OTel Collector，指标名对不上。看板要怎么做？",
+      "expected_output": "Recommends recording rules normalizing both sources to one canonical name, rather than 'or' clauses spread through panels. Gives the maintenance argument: one file to edit versus every panel. Notes that rules must deploy before dashboards. May point to prometheus-label-strategy for the cardinality risk that mixed instrumentation creates.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "这几个 JSON 我改完了，提 MR 之前帮我看一遍",
+      "expected_output": "Runs scripts/validate.py rather than reading JSON by eye. Separates errors from warnings and explains why each matters — especially hardcoded datasource UIDs and panel overlap, which are invisible in review but visibly broken in Grafana. Does not re-derive the checks manually.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "新看板我直接在 Grafana 界面上调好了，怎么同步回去？",
+      "expected_output": "States that Git is the source of truth and central-folder dashboards are UI read-only, then supplies the sanctioned path back: export the JSON, strip id/version/__inputs, open an MR. Should treat this as a legitimate workflow rather than a policy violation — the return path exists precisely so people do not route around the process.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "帮我写一个 PromQL，算 P99 延迟",
+      "expected_output": "Negative test for scope discipline. General PromQL belongs to the official promql skill. Answering correctly is fine; what should NOT happen is this skill loading its full contents, or the response restating panel and query guidance that upstream already maintains.",
+      "files": []
+    }
+  ]
+}
